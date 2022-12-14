@@ -4,20 +4,22 @@ using System.Linq.Expressions;
 
 namespace Auxiliary
 {
-    public sealed class Collection<TEntity> where TEntity : IEntity
+    public class BsonCollection<T>
+        where T : BsonModel, new()
     {
-        private readonly MongoCollectionBase<TEntity> _collection;
+        private readonly MongoCollectionBase<T> _collection;
 
         /// <summary>
-        ///     Creates or finds a collection from passed <paramref name="collection"/>.
+        ///     Creates or finds a collection from passed <paramref name="name"/>.
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="name"></param>
         /// <exception cref="ArgumentNullException">Thrown when the manager cannot succesfully create a collection for provided document name.</exception>
-        public Collection(string collection)
+        public BsonCollection(string name)
         {
-            if (DatabaseManager.IsConnected)
-                _collection = DatabaseManager.GetCollection<TEntity>(collection);
-            else throw new ArgumentNullException(nameof(collection));
+            if (StorageProvider.IsDatabaseConfigured())
+                _collection = StorageProvider.GetMongoCollection<T>(name);
+            else 
+                throw new InvalidOperationException("Cannot fetch a mongo collection if the database is not live.");
         }
 
         /// <summary>
@@ -25,7 +27,7 @@ namespace Auxiliary
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
-        public async Task InsertDocumentAsync(TEntity document)
+        public async Task InsertDocumentAsync(T document)
             => await _collection.InsertOneAsync(document);
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace Auxiliary
         /// </summary>
         /// <param name="documents"></param>
         /// <returns></returns>
-        public async Task InsertDocumentsAsync(IEnumerable<TEntity> documents)
+        public async Task InsertDocumentsAsync(IEnumerable<T> documents)
             => await _collection.InsertManyAsync(documents);
 
         /// <summary>
@@ -41,7 +43,7 @@ namespace Auxiliary
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
-        public async Task InsertOrUpdateDocumentAsync(TEntity document)
+        public async Task InsertOrUpdateDocumentAsync(T document)
         {
             if (document.ObjectId == ObjectId.Empty)
                 await _collection.InsertOneAsync(document);
@@ -54,7 +56,7 @@ namespace Auxiliary
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateDocumentAsync(TEntity document)
+        public async Task<bool> UpdateDocumentAsync(T document)
         {
             var entity = await (await _collection.FindAsync(x => x.ObjectId == document.ObjectId))
                 .FirstOrDefaultAsync();
@@ -73,21 +75,21 @@ namespace Auxiliary
         /// <param name="document"></param>
         /// <param name="update"></param>
         /// <returns></returns>
-        public async Task<bool> ModifyDocumentAsync(TEntity document, UpdateDefinition<TEntity> update)
+        public async Task<bool> ModifyDocumentAsync(T document, UpdateDefinition<T> update)
             => (await _collection.UpdateOneAsync(x => x.ObjectId == document.ObjectId, update)).IsAcknowledged;
 
         /// <summary>
         ///     Gets the first document from a collection.
         /// </summary>
         /// <returns></returns>
-        public async Task<TEntity> GetFirstDocumentAsync()
+        public async Task<T> GetFirstDocumentAsync()
             => await (await _collection.FindAsync(new BsonDocument())).FirstOrDefaultAsync();
 
         /// <summary>
         ///     Gets all documents from a collection.
         /// </summary>
         /// <returns></returns>
-        public async IAsyncEnumerable<TEntity> GetAllDocumentsAsync()
+        public async IAsyncEnumerable<T> GetAllDocumentsAsync()
         {
             var collection = await _collection.FindAsync(new BsonDocument());
 
@@ -102,7 +104,7 @@ namespace Auxiliary
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteDocumentAsync(TEntity document)
+        public async Task<bool> DeleteDocumentAsync(T document)
             => (await _collection.DeleteOneAsync(x => x.ObjectId == document.ObjectId)).IsAcknowledged;
 
         /// <summary>
@@ -110,15 +112,15 @@ namespace Auxiliary
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteManyDocumentsAsync(Expression<Func<TEntity, bool>> filter)
-            => (await _collection.DeleteManyAsync<TEntity>(filter)).IsAcknowledged;
+        public async Task<bool> DeleteManyDocumentsAsync(Expression<Func<T, bool>> filter)
+            => (await _collection.DeleteManyAsync<T>(filter)).IsAcknowledged;
 
         /// <summary>
         ///     Finds the first occurence in a range of documents returned by the <paramref name="filter"/>.
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public async Task<TEntity> FindDocumentAsync(Expression<Func<TEntity, bool>> filter)
+        public async Task<T> FindDocumentAsync(Expression<Func<T, bool>> filter)
             => await (await _collection.FindAsync(filter)).FirstOrDefaultAsync();
 
         /// <summary>
@@ -126,7 +128,7 @@ namespace Auxiliary
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public async IAsyncEnumerable<TEntity> FindManyDocumentsAsync(Expression<Func<TEntity, bool>> filter)
+        public async IAsyncEnumerable<T> FindManyDocumentsAsync(Expression<Func<T, bool>> filter)
         {
             var collection = await _collection.FindAsync(filter);
 
