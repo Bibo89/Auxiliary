@@ -12,7 +12,7 @@ namespace Auxiliary.Configuration
         [JsonPropertyName("connectionstring")]
         public string ConnectionString { get; set; } = string.Empty;
 
-        [JsonPropertyName("defaultdb")]
+        [JsonPropertyName("mongopath")]
         public string MongoStorageName { get; set; } = string.Empty;
 
         [JsonPropertyName("localpath")]
