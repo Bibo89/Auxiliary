@@ -13,6 +13,9 @@ namespace Auxiliary.Configuration
         public string ConnectionString { get; set; } = string.Empty;
 
         [JsonPropertyName("defaultdb")]
-        public string DefaultDbName { get; set; } = string.Empty;
+        public string MongoStorageName { get; set; } = string.Empty;
+
+        [JsonPropertyName("localpath")]
+        public string LocalStorageName { get; set; } = string.Empty;
     }
 }
