@@ -4,12 +4,45 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  
+	<AssemblyVersion>1.0</AssemblyVersion>
+	<PackageVersion>1.0</PackageVersion>
+	<FileVersion>1.0.0.0</FileVersion>
+	<Version>1.0</Version>
+
+	<Authors>TBC Developers.</Authors>
+
+	<PackageProjectUrl>https://github.com/Terraria-Builders-Community/Auxiliary</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/Terraria-Builders-Community/Auxiliary</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+
+	<PackageReleaseNotes>Version 1.0; Made for Terraria.</PackageReleaseNotes>
+	<PackageTags>Data, Models, Packets, Configuration, TShock</PackageTags>
+	  
+	<Title>Auxiliary for Terraria</Title>
+	<Description>Auxiliary introduces a clean and elegant way to interact with data and configuration in Terraria plugins.</Description>
+	
+	<NeutralLanguage>en-US</NeutralLanguage>
+
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageId>TBC.Extensions.Auxiliary</PackageId>
+
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+	<Copyright>TBC Developers.</Copyright>
+
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
-    <PackageReference Include="MongoDB.Driver" Version="2.17.1" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
   </ItemGroup>
 
 </Project>
