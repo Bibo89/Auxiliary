@@ -8,7 +8,7 @@ namespace Auxiliary
     {
         public static readonly BsonCollection<T> Collection = new(typeof(T).Name + "s");
 
-        public static async ValueTask<bool> SaveAsync(T model, UpdateDefinition<T> updateDefinition, CancellationToken cancellationToken = default)
+        public static async Task<bool> SaveAsync(T model, UpdateDefinition<T> updateDefinition, CancellationToken cancellationToken = default)
         {
             if (model.State is ModelState.Stateless or ModelState.Deleted or ModelState.Deserializing)
                 return false;
@@ -16,7 +16,7 @@ namespace Auxiliary
             return await Collection.ModifyDocumentAsync(model, updateDefinition, cancellationToken);
         }
 
-        public static async ValueTask<bool> DeleteAsync(T model, CancellationToken cancellationToken = default)
+        public static async Task<bool> DeleteAsync(T model, CancellationToken cancellationToken = default)
         {
             if (model.State is ModelState.Stateless or ModelState.Deleted)
                 return false;
@@ -26,14 +26,14 @@ namespace Auxiliary
             return await Collection.DeleteDocumentAsync(model, cancellationToken);
         }
 
-        public static async ValueTask<T?> GetAsync(Expression<Func<T, bool>> func, bool createOnFailedFetch, CancellationToken cancellationToken = default)
+        public static async Task<T?> GetAsync(Expression<Func<T, bool>> func, Action<T>? creationAction = null, CancellationToken cancellationToken = default)
         {
             var value = await Collection.FindDocumentAsync(func, cancellationToken);
 
             if (value is null)
             {
-                if (createOnFailedFetch)
-                    value = await CreateAsync((x) => { }, cancellationToken);
+                if (creationAction is not null)
+                    value = await CreateAsync(creationAction, cancellationToken);
 
                 else
                     return default;
@@ -44,7 +44,7 @@ namespace Auxiliary
             return value;
         }
 
-        public static async ValueTask<T> CreateAsync(Action<T> action, CancellationToken cancellationToken = default)
+        public static async Task<T> CreateAsync(Action<T> action, CancellationToken cancellationToken = default)
         {
             var value = new T();
 

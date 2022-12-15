@@ -10,20 +10,20 @@
         /// </summary>
         public ModelType ModelType { get; }
 
-        public static async ValueTask<T> CreateAsync<T>(JsonCreateRequest<T> definition)
+        public static async Task<T> CreateAsync<T>(JsonCreateRequest<T> definition)
             where T : JsonModel, new()
             => await JsonModel.CreateAsync(definition.Definition);
 
-        public static async ValueTask<T> CreateAsync<T>(BsonCreateRequest<T> definition)
+        public static async Task<T> CreateAsync<T>(BsonCreateRequest<T> definition)
             where T : BsonModel, new()
             => await BsonModel.CreateAsync(definition.Definition);
 
-        public static async ValueTask<T?> GetAsync<T>(JsonGetRequest<T> request, bool createOnFailedFetch = false)
+        public static async Task<T?> GetAsync<T>(JsonGetRequest<T> request, Action<T>? creationAction = null)
             where T : JsonModel, new()
-            => await JsonModel.GetAsync(request.Request, createOnFailedFetch);
+            => await JsonModel.GetAsync(request.Request, creationAction);
 
-        public static async ValueTask<T?> GetAsync<T>(BsonGetRequest<T> request, bool createOnFailedFetch = false)
+        public static async Task<T?> GetAsync<T>(BsonGetRequest<T> request, Action<T>? creationAction = null)
             where T : BsonModel, new()
-            => await BsonModel.GetAsync(request.Request, createOnFailedFetch);
+            => await BsonModel.GetAsync(request.Request, creationAction);
     }
 }

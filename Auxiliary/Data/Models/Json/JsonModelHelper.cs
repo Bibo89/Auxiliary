@@ -5,23 +5,23 @@
     {
         public static readonly JsonCollection<T> Collection = new(typeof(T).Name + "s");
 
-        public static async ValueTask<bool> SaveAsync(T model, CancellationToken cancellationToken = default)
+        public static async Task<bool> SaveAsync(T model, CancellationToken cancellationToken = default)
             => await Collection.InsertOrUpdateDocumentAsync(model, cancellationToken);
 
-        public static async ValueTask<bool> DeleteAsync(T model, CancellationToken cancellationToken = default)
+        public static async Task<bool> DeleteAsync(T model, CancellationToken cancellationToken = default)
             => await Collection.DeleteDocumentAsync(model, cancellationToken);
 
-        public static async ValueTask<T?> GetAsync(Func<T, bool> func, bool createOnFailedFetch, CancellationToken cancellationToken = default)
+        public static async Task<T?> GetAsync(Func<T, bool> func, Action<T>? creationAction = null, CancellationToken cancellationToken = default)
         {
             var document = Collection.FindDocument(func);
 
-            if (createOnFailedFetch && document is null)
-                document = await CreateAsync(x => { }, cancellationToken);
+            if (document is null && creationAction is not null)
+                document = await CreateAsync(creationAction, cancellationToken);
 
             return document;
         }
 
-        public static async ValueTask<T> CreateAsync(Action<T> action, CancellationToken cancellationToken = default)
+        public static async Task<T> CreateAsync(Action<T> action, CancellationToken cancellationToken = default)
         {
             var document = new T();
 

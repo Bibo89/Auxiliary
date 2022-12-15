@@ -2,12 +2,12 @@
 {
     public static class JsonModelExtensions
     {
-        public static async ValueTask<bool> SaveAsync<T>(this T? entity, CancellationToken cancellationToken = default)
+        public static async Task<bool> SaveAsync<T>(this T? model, CancellationToken cancellationToken = default)
             where T : JsonModel, new()
-            => entity is not null && await JsonModelHelper<T>.SaveAsync(entity, cancellationToken);
+            => model is not null && await JsonModelHelper<T>.SaveAsync(model, cancellationToken);
 
-        public static async ValueTask<bool> DeleteAsync<T>(this T? entity, CancellationToken cancellationToken = default)
+        public static async Task<bool> DeleteAsync<T>(this T? model, CancellationToken cancellationToken = default)
             where T : JsonModel, new()
-            => entity is not null && await JsonModelHelper<T>.DeleteAsync(entity, cancellationToken);
+            => model is not null && await JsonModelHelper<T>.DeleteAsync(model, cancellationToken);
     }
 }

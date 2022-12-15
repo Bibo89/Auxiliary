@@ -16,20 +16,20 @@ namespace Auxiliary
         [BsonIgnore]
         public ModelType ModelType { get; } = ModelType.Bson;
 
-        public static async ValueTask<bool> SaveAsync<T, TField>(T? entity, Expression<Func<T, TField>> expression, TField value, CancellationToken cancellationToken = default)
+        public static async Task<bool> SaveAsync<T, TField>(T? model, Expression<Func<T, TField>> expression, TField value, CancellationToken cancellationToken = default)
             where T : BsonModel, new()
-            => entity is not null && await BsonModelHelper<T>.SaveAsync(entity, Builders<T>.Update.Set(expression, value), cancellationToken);
+            => model is not null && await BsonModelHelper<T>.SaveAsync(model, Builders<T>.Update.Set(expression, value), cancellationToken);
 
-        public static async ValueTask<bool> DeleteAsync<T>(T model, CancellationToken cancellationToken = default)
+        public static async Task<bool> DeleteAsync<T>(T model, CancellationToken cancellationToken = default)
             where T : BsonModel, new()
             => await BsonModelHelper<T>.DeleteAsync(model, cancellationToken);
 
-        public static async ValueTask<T> CreateAsync<T>(Action<T> action, CancellationToken cancellationToken = default)
+        public static async Task<T> CreateAsync<T>(Action<T> action, CancellationToken cancellationToken = default)
             where T : BsonModel, new()
             => await BsonModelHelper<T>.CreateAsync(action, cancellationToken);
 
-        public static async ValueTask<T?> GetAsync<T>(Expression<Func<T, bool>> func, bool createOnFailedFetch = false, CancellationToken cancellationToken = default)
+        public static async Task<T?> GetAsync<T>(Expression<Func<T, bool>> func, Action<T>? creationAction = null, CancellationToken cancellationToken = default)
             where T : BsonModel, new()
-            => await BsonModelHelper<T>.GetAsync(func, createOnFailedFetch, cancellationToken);
+            => await BsonModelHelper<T>.GetAsync(func, creationAction, cancellationToken);
     }
 }
