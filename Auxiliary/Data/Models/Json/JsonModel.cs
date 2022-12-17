@@ -21,6 +21,6 @@ namespace Auxiliary
 
         public static async Task<T?> GetAsync<T>(Func<T, bool> func, Action<T>? creationAction = null, CancellationToken cancellationToken = default)
             where T : JsonModel, new()
-            => await JsonModelHelper<T>.GetAsync(func, creationAction, cancellationToken); 
+            => await JsonModelHelper<T>.GetAsync(func, creationAction, cancellationToken);
     }
 }

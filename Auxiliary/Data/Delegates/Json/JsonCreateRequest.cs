@@ -1,6 +1,6 @@
 ﻿namespace Auxiliary
 {
-    public readonly struct JsonCreateRequest<T> 
+    public readonly struct JsonCreateRequest<T>
         where T : JsonModel, new()
     {
         public Action<T> Definition { get; }

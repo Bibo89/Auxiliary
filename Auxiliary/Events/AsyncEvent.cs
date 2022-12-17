@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Auxiliary.Events
+﻿namespace Auxiliary.Events
 {
     /// <summary>
     ///     Represents an asynchronous event container.
@@ -63,7 +57,7 @@ namespace Auxiliary.Events
                 _subscriptions.Remove(subscriber);
         }
     }
-    
+
     public static class AsyncEvent
     {
         public static async Task InvokeAsync(this AsyncEvent<Func<Task>> eventHandler)

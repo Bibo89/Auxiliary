@@ -2,7 +2,7 @@
 
 namespace Auxiliary
 {
-    public readonly struct BsonGetRequest<T> 
+    public readonly struct BsonGetRequest<T>
         where T : BsonModel, new()
     {
         public Expression<Func<T, bool>> Request { get; }

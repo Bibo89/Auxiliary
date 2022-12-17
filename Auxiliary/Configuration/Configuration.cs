@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Auxiliary.Configuration
 {
@@ -11,7 +6,7 @@ namespace Auxiliary.Configuration
     ///     Represents a configuration implementation.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public static class Configuration<T> 
+    public static class Configuration<T>
         where T : ISettings, new()
     {
         private static string? _basePath;

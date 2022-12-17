@@ -1,7 +1,4 @@
-﻿using System.Text;
-using System.IO;
-
-namespace Auxiliary.Packets
+﻿namespace Auxiliary.Packets
 {
     /// <summary>
     ///     Represents a packet generator for sending packets over the net client of the game.
